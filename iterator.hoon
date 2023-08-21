@@ -1,4 +1,12 @@
-::  lib/iterator.hoon
+::  lib/iterator.hoon WIP
+::
+::  What's the sum of the first 20 natural numbers, divisible by 3 or 5?
+:: =<
+::   %-  return-last
+::   %+  accumulate  add
+::   %+  take  20
+::   %+  filter-true  |=(n=@ |(=(0 (mod n 3)) =(0 (mod n 5))))
+::   (count 1 1)
 ::
 |%
 ++  iterator
@@ -77,12 +85,12 @@
   |.([a ..$])
 ::
 ++  accumulate
-  |*  [it=(iterator) f=_=>(~ |=([* *] +<+))]
+  |*  [f=_=>(~ |=([* *] +<+)) it=(iterator)]
   ^-  (iterator _(f *(iterator-type it) +<+.f))
   |.
   =+  (it)
   ?~  -  ~
-  =/  result  (f i +<+.f)
+  =/  result  ,:(f i +<+.f)
   :-  result
   ..$(it next, f f(+<+ result))
 ::
@@ -109,12 +117,22 @@
   [i next]
 ::
 ++  filter-false
-  |*  [it=(iterator) f=$-(* ?)]
+  |*  [f=$-(* ?) it=(iterator)]
   ^+  it
   |.
   =+  (it)
   ?~  -  ~
   ?:  (f i)
+    $(it next)
+  [i ..$(it next)]
+::
+++  filter-true
+  |*  [f=$-(* ?) it=(iterator)]
+  ^+  it
+  |.
+  =+  (it)
+  ?~  -  ~
+  ?.  (f i)
     $(it next)
   [i ..$(it next)]
 ::
@@ -160,4 +178,19 @@
     ~
   [i ..$(it next)]
 ::
+++  return-last
+  |*  it=(iterator)
+  ::  (pins ~ or [i next])
+  ::
+  =+  (it)
+  ?~  -
+    ~|  'no-last-element'
+    !!
+  |-  ^-  (iterator-type it)
+  =+  (next)
+  ?~  -  i
+  $(i i, next next)  ::  instant hyperborean classic
+                     ::  replaces original [i next] pair with new values
+                     ::  alternatively, $(+< -) would also work
+                     ::  but it'd be even more cursed
 --
