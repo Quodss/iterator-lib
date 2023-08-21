@@ -1,6 +1,6 @@
 ::  lib/iterator.hoon WIP
 ::
-::  What's the sum of the first 20 natural numbers, divisible by 3 or 5?
+::  What's the sum of the first 20 natural numbers divisible by 3 or 5?
 :: =<
 ::   %-  return-last
 ::   %+  accumulate  add
