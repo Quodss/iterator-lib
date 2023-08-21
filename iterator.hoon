@@ -78,7 +78,7 @@
 ::
 ++  accumulate
   |*  [it=(iterator) f=_=>(~ |=([* *] +<+))]
-  ^+  (iterator _(f *(iterator-type it) +<+.f))
+  ^-  (iterator _(f *(iterator-type it) +<+.f))
   |.
   =+  (it)
   ?~  -  ~
