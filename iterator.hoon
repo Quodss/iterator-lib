@@ -6,7 +6,7 @@
 ::   %+  accumulate  add
 ::   %+  take  20
 ::   %+  filter-true  |=(n=@ |(=(0 (mod n 3)) =(0 (mod n 5))))
-::   (count 1 1)
+::   (count from=1 step=1)
 ::
 |%
 ++  iterator
