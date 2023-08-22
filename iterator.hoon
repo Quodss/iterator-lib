@@ -2,12 +2,20 @@
 ::
 ::  What's the sum of the first 20 natural numbers divisible by 3 or 5?
 ::
-:: =<
-::   %+  get-ind  19  ::  0-indexed
-::   %+  accumulate  add
-::   %+  filter-true  |=(n=@ |(=(0 (mod n 3)) =(0 (mod n 5))))
-::   (count from=1 step=1)
+::  =<
+::    %+  get-ind  19  ::  0-indexed
+::    %+  accumulate  add
+::    %+  filter-true  |=(n=@ |(=(0 (mod n 3)) =(0 (mod n 5))))
+::    (count from=1 step=1)
 ::
+::  Get 10.001th prime:
+::
+::  =<  (get-ind 10.000 primes)
+::
+=<  %-  to-list
+    %+  take  10
+    %+  zip  (count 1 1)
+    (take 5 (count 1 1))
 |%
 ++  iterator
   |$  [item]
@@ -189,39 +197,49 @@
                      ::  cycle continues with `next` iterator. This idiom
                      ::  is equivalent to `$(+< -)`, but this is
                      ::  even more cursed.
-  ::
-  ++  get-ind
-    |*  [ind=@ it=(iterator)]
-    |-  ^-  (iterator-type it)
-    =+  (it)
-    ?:  &(!=(ind 0) ?=(^ -))
-      $(ind (dec ind), it next)
-    ?:  &(=(ind 0) ?=(^ -))
-      i
-    ~|  'index-not-reached'
-    !!
-  ::
-  ++  primes
-    =/  n=@  2
-    ^-  (iterator @)
-    |.
-    =*  this-iter  ..$
-    ~+
-    ?:  =(n 2)
-      [2 this-iter(n 3)]
-    =/  is-n-prime
-      ;;  ?  .*  .  !=  ::  avoiding fuse-loop error
-      %-  is-empty
-      %+  filter-true  |=(i=@ =(0 (mod n i)))
-      %+  take-while
-        this-iter(n 2)
-      (cork (curr pow 2) (curr lte n))
+::
+++  get-ind
+  |*  [ind=@ it=(iterator)]
+  |-  ^-  (iterator-type it)
+  =+  (it)
+  ?:  &(!=(ind 0) ?=(^ -))
+    $(ind (dec ind), it next)
+  ?:  &(=(ind 0) ?=(^ -))
+    i
+  ~|  'index-not-reached'
+  !!
+::
+++  primes
+  =/  n=@  2
+  ^-  (iterator @)
+  |.
+  =*  this-iter  ..$
+  ~+
+  ?:  =(n 2)
+    [2 this-iter(n 3)]
+  =;  is-n-prime=?
     ?:  is-n-prime
       [n this-iter(n (add 2 n))]
     $(n (add 2 n))
-  ::
-  ++  is-empty
-    |=  it=(iterator)
-    ^-  ?
-    ?=(@ (it))
+  ;;  ?  .*  .  !=  ::  avoiding fuse-loop error
+  %-  is-empty
+  %+  filter-true  |=(i=@ =(0 (mod n i)))
+  %+  take-while
+    this-iter(n 2)
+  (cork (curr pow 2) (curr lte n))
+::
+++  is-empty
+  |=  it=(iterator)
+  ^-  ?
+  ?=(@ (it))
+::
+++  zip
+  |*  [a=(iterator) b=(iterator)]
+  ^-  (iterator (pair (iterator-type a) (iterator-type b)))
+  |.
+  =+  [pop-a pop-b]=[(a) (b)]
+  ?.  &(?=(^ pop-a) ?=(^ pop-b))
+    ~
+  [[i.pop-a i.pop-b] ..$(a next.pop-a, b next.pop-b)]
+::
 --
