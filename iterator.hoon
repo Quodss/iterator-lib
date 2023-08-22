@@ -203,7 +203,11 @@
     =*  this-it  ..$
     ::~+
     ?:
-        ::;;  ?  .*  .  !=  ::  idk wtf im doing why you fuse-loop why dont you compute
+        ::;;  ?  .*  .  !=  ::  idk wtf im doing why you fuse-loop why dont you compuuuute
+                            ::  maybe add something like ?:  =(n 2)
+                                                           [2 ..$(n 3)]
+                                                         ...
+                            ::  so that take-while finishes properly?
         %-  is-empty
         %+  filter-true  |=(i=@ =(0 (mod n i)))
         ::(take-while this-it(n 2) (cork (curr pow 2) (curr lte n)))
