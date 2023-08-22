@@ -8,6 +8,7 @@
 ::     %+  filter-true  |=(n=@ |(=(0 (mod n 3)) =(0 (mod n 5))))
 ::     (count from=1 step=1)
 ::
+=<  (to-list (take 10 primes))
 |%
 ++  iterator
   |$  [item]
@@ -129,7 +130,7 @@
     $(it next)
   [i ..$(it next)]
 ::
-++  slice
+++  slice  ::  overcomputes?
   |*  [[from=@ to=@ step=@] it=(iterator)]
   ^+  it
   =/  counter=@  0
@@ -195,16 +196,18 @@
     ^-  (iterator-type it)
     (get-last (take +(ind) it))
   ::
-  ++  primes  ::  XX
-    ^-  (iterator @)
+  ++  primes  ::  overcomputes?
     =/  n=@  2
+    ^-  (iterator @)
     |.
     =*  this-it  ..$
-    ~+
+    ::~+
     ?:
-        %-  is-empty  ::  XX
+        ::;;  ?  .*  .  !=  ::  idk wtf im doing why you fuse-loop why dont you compute
+        %-  is-empty
         %+  filter-true  |=(i=@ =(0 (mod n i)))
-        (take-while this-it (cork (curr pow 2) (curr lte n)))
+        ::(take-while this-it(n 2) (cork (curr pow 2) (curr lte n)))
+        (take-while (count 2 1) (cork (curr pow 2) (curr lte n)))
       [n this-it(n +(n))]
     $(n +(n))
   ::
