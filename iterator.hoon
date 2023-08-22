@@ -3,7 +3,7 @@
 ::  What's the sum of the first 20 natural numbers divisible by 3 or 5?
 ::
 ::  =<
-::     %+  get-ind  20
+::     %+  get-ind  19  ::  0-indexed
 ::     %+  accumulate  add
 ::     %+  filter-true  |=(n=@ |(=(0 (mod n 3)) =(0 (mod n 5))))
 ::     (count from=1 step=1)
@@ -44,6 +44,7 @@
   ^-  (iterator @)
   |.
   [start ..$(start (add start step))]
+::  ++take first n
 ::
 ++  take
   |*  [n=@ it=(iterator)]
@@ -192,5 +193,5 @@
   ++  get-ind
     |*  [ind=@ it=(iterator)]
     ^-  (iterator-type it)
-    (get-last (take ind it))
+    (get-last (take +(ind) it))
 --
