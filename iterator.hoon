@@ -8,7 +8,7 @@
 ::     %+  filter-true  |=(n=@ |(=(0 (mod n 3)) =(0 (mod n 5))))
 ::     (count from=1 step=1)
 ::
-=<  (to-list (take 10 primes))
+::  =<  (to-list (take 10 primes))
 |%
 ++  iterator
   |$  [item]
