@@ -8,7 +8,6 @@
 ::   %+  filter-true  |=(n=@ |(=(0 (mod n 3)) =(0 (mod n 5))))
 ::   (count from=1 step=1)
 ::
-::
 |%
 ++  iterator
   |$  [item]
@@ -193,8 +192,14 @@
   ::
   ++  get-ind
     |*  [ind=@ it=(iterator)]
-    ^-  (iterator-type it)
-    (get-last (take +(ind) it))
+    |-  ^-  (iterator-type it)
+    =+  (it)
+    ?:  &(!=(ind 0) ?=(^ -))
+      $(ind (dec ind), it next)
+    ?:  &(=(ind 0) ?=(^ -))
+      i
+    ~|  'index-not-reached'
+    !!
   ::
   ++  primes
     =/  n=@  2
