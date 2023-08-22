@@ -1,12 +1,12 @@
 ::  lib/iterator.hoon WIP
 ::
 ::  What's the sum of the first 20 natural numbers divisible by 3 or 5?
-:: =<
-::   %-  return-last
-::   %+  accumulate  add
-::   %+  take  20
-::   %+  filter-true  |=(n=@ |(=(0 (mod n 3)) =(0 (mod n 5))))
-::   (count from=1 step=1)
+::
+::  =<
+::     %+  get-ind  20
+::     %+  accumulate  add
+::     %+  filter-true  |=(n=@ |(=(0 (mod n 3)) =(0 (mod n 5))))
+::     (count from=1 step=1)
 ::
 |%
 ++  iterator
@@ -27,7 +27,7 @@
   =+  (it)
   _?>(?=(^ -) i)
 ::
-++  to-list
+++  to-list  ::  unsafe: potential inf loop
   |*  it=(iterator)
   %-  flop
   =|  out=(list (iterator-type it))
@@ -48,15 +48,7 @@
 ++  take
   |*  [n=@ it=(iterator)]
   ^+  it
-  |.
-  ?:  =(0 n)  ~
-  =+  (it)
-  ?~  -  ~
-  :-  i
-  %=  ..$
-    n  (dec n)
-    it  next
-  ==
+  (slice [0 n 1] it)
 ::
 ++  chain
   |*  [a=(iterator) b=(iterator)]
@@ -137,7 +129,7 @@
   [i ..$(it next)]
 ::
 ++  slice
-  |*  [from=@ to=@ step=@ it=(iterator)]
+  |*  [[from=@ to=@ step=@] it=(iterator)]
   ^+  it
   =/  counter=@  0
   |.
@@ -178,19 +170,27 @@
     ~
   [i ..$(it next)]
 ::
-++  return-last
+++  get-last  ::  unsafe: potential inf loop
   |*  it=(iterator)
+  ^-  (iterator-type it)
   ::  (pins ~ or [i next])
   ::
   =+  (it)
   ?~  -
-    ~|  'no-last-element'
+    ~|  'empty-iterator'
     !!
   |-  ^-  (iterator-type it)
   =+  (next)
   ?~  -  i
-  $(i i, next next)  ::  instant hyperborean classic
-                     ::  replaces original [i next] pair with new values
-                     ::  alternatively, $(+< -) would also work
-                     ::  but it'd be even more cursed
+  $(i i, next next)  ::  **WTF**
+                     ::  Replaces original [i next] pair from `(it)`
+                     ::  with the new values from `(next)`. Then the
+                     ::  cycle continues with `next` iterator. This idiom
+                     ::  is equivalent to `$(+< -)`, but this is
+                     ::  even more cursed.
+  ::
+  ++  get-ind
+    |*  [ind=@ it=(iterator)]
+    ^-  (iterator-type it)
+    (get-last (take ind it))
 --
