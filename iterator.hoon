@@ -12,10 +12,6 @@
 ::
 ::  =<  (get-ind 10.000 primes)
 ::
-=<  %-  to-list
-    %+  take  10
-    %+  zip  (count 1 1)
-    (take 5 (count 1 1))
 |%
 ++  iterator
   |$  [item]
