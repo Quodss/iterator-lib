@@ -195,15 +195,21 @@
     ^-  (iterator-type it)
     (get-last (take +(ind) it))
   ::
-  ++  primes
-  ^-  (iterator @)
-  =/  n=@  2
-  |.
-  =*  this-it  ..$
-  ?:
-      %-  is-empty  ::  XX
-      %-  filter-true  |=(i=@ =(0 (mod n i)))
-      (take-while this-it (cork (curr pow 2) (curr lth n)))
-    [n this-it(n +(n))]
-  $(n +(n))
+  ++  primes  ::  XX
+    ^-  (iterator @)
+    =/  n=@  2
+    |.
+    =*  this-it  ..$
+    ~+
+    ?:
+        %-  is-empty  ::  XX
+        %+  filter-true  |=(i=@ =(0 (mod n i)))
+        (take-while this-it (cork (curr pow 2) (curr lte n)))
+      [n this-it(n +(n))]
+    $(n +(n))
+  ::
+  ++  is-empty
+    |=  it=(iterator)
+    ^-  ?
+    ?=(@ (it))
 --
