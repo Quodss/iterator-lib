@@ -2,13 +2,13 @@
 ::
 ::  What's the sum of the first 20 natural numbers divisible by 3 or 5?
 ::
-::  =<
-::     %+  get-ind  19  ::  0-indexed
-::     %+  accumulate  add
-::     %+  filter-true  |=(n=@ |(=(0 (mod n 3)) =(0 (mod n 5))))
-::     (count from=1 step=1)
+:: =<
+::   %+  get-ind  19  ::  0-indexed
+::   %+  accumulate  add
+::   %+  filter-true  |=(n=@ |(=(0 (mod n 3)) =(0 (mod n 5))))
+::   (count from=1 step=1)
 ::
-::  =<  (to-list (take 10 primes))
+::
 |%
 ++  iterator
   |$  [item]
@@ -57,16 +57,17 @@
   ^+  a
   |.
   =+  (a)
-  ?^  -
-    [i ..$(a next)]
-  =+  (b)
-  ?~  -  ~
-  [i ..$(b next)]
+  ?~  -
+    (b)
+  [i ..$(a next)]
 ::
 ++  cycle
   |*  it=(iterator)
   ^+  it
   =+  it-init=it
+  ?:  (is-empty it-init)
+    ~|  'empty-iterator'
+    !!
   |.
   =+  (it)
   ?^  -
@@ -130,17 +131,17 @@
     $(it next)
   [i ..$(it next)]
 ::
-++  slice  ::  overcomputes?
+++  slice
   |*  [[from=@ to=@ step=@] it=(iterator)]
   ^+  it
   =/  counter=@  0
   |.
+  ?:  (gte counter to)
+    ~
   =+  (it)
   ?~  -  ~
   ?.  =(0 from)
     $(it next, from (dec from), counter +(counter))
-  ?:  (gte counter to)
-    ~
   [i ..$(it next, from (dec step), counter +(counter))]
 ::
 ++  pairwise
@@ -184,8 +185,7 @@
   |-  ^-  (iterator-type it)
   =+  (next)
   ?~  -  i
-  $(i i, next next)  ::  **WTF**
-                     ::  Replaces original [i next] pair from `(it)`
+  $(i i, next next)  ::  Replaces original [i next] pair from `(it)`
                      ::  with the new values from `(next)`. Then the
                      ::  cycle continues with `next` iterator. This idiom
                      ::  is equivalent to `$(+< -)`, but this is
@@ -196,24 +196,24 @@
     ^-  (iterator-type it)
     (get-last (take +(ind) it))
   ::
-  ++  primes  ::  overcomputes?
+  ++  primes
     =/  n=@  2
     ^-  (iterator @)
     |.
-    =*  this-it  ..$
-    ::~+
-    ?:
-        ::;;  ?  .*  .  !=  ::  idk wtf im doing why you fuse-loop why dont you compuuuute
-                            ::  maybe add something like ?:  =(n 2)
-                            ::                             [2 ..$(n 3)]
-                            ::                           ...
-                            ::  so that take-while finishes properly?
-        %-  is-empty
-        %+  filter-true  |=(i=@ =(0 (mod n i)))
-        ::(take-while this-it(n 2) (cork (curr pow 2) (curr lte n)))
-        (take-while (count 2 1) (cork (curr pow 2) (curr lte n)))
-      [n this-it(n +(n))]
-    $(n +(n))
+    =*  this-iter  ..$
+    ~+
+    ?:  =(n 2)
+      [2 this-iter(n 3)]
+    =/  is-n-prime
+      ;;  ?  .*  .  !=  ::  avoiding fuse-loop error
+      %-  is-empty
+      %+  filter-true  |=(i=@ =(0 (mod n i)))
+      %+  take-while
+        this-iter(n 2)
+      (cork (curr pow 2) (curr lte n))
+    ?:  is-n-prime
+      [n this-iter(n (add 2 n))]
+    $(n (add 2 n))
   ::
   ++  is-empty
     |=  it=(iterator)
