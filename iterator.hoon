@@ -158,7 +158,7 @@
   :-  [i.first-eval i.second-eval]
   ..$(it next.second-eval)
 ::
-++  starmap
+++  map
   |*  [it=(iterator) f=$-(* *)]
   ^-  (iterator _(f *(iterator-type it)))
   |.
