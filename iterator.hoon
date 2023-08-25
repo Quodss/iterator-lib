@@ -204,6 +204,7 @@
     i
   ~|  'index-not-reached'
   !!
+::  toy example
 ::
 ++  primes
   =/  n=@  2
