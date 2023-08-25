@@ -73,8 +73,7 @@
     !!
   |.
   =+  (it)
-  ?^  -
-    [i ..$(it next)]
+  ?^  -  [i ..$(it next)]
   $(it it-init)
 ::
 ++  repeat
@@ -114,17 +113,7 @@
     $(it next)
   [i next]
 ::
-++  filter-false
-  |*  [f=$-(* ?) it=(iterator)]
-  ^+  it
-  |.
-  =+  (it)
-  ?~  -  ~
-  ?:  (f i)
-    $(it next)
-  [i ..$(it next)]
-::
-++  filter-true
+++  filter
   |*  [f=$-(* ?) it=(iterator)]
   ^+  it
   |.
@@ -204,26 +193,6 @@
     i
   ~|  'index-not-reached'
   !!
-::  toy example
-::
-++  primes
-  =/  n=@  2
-  ^-  (iterator @)
-  |.
-  =*  this-iter  ..$
-  ~+
-  ?:  =(n 2)
-    [2 this-iter(n 3)]
-  =;  is-n-prime=?
-    ?:  is-n-prime
-      [n this-iter(n (add 2 n))]
-    $(n (add 2 n))
-  ;;  ?  .*  .  !=  ::  avoiding fuse-loop error
-  %-  is-empty
-  %+  filter-true  |=(i=@ =(0 (mod n i)))
-  %+  take-while
-    this-iter(n 2)
-  (cork (curr pow 2) (curr lte n))
 ::
 ++  is-empty
   |=  it=(iterator)
@@ -238,5 +207,22 @@
   ?.  &(?=(^ pop-a) ?=(^ pop-b))
     ~
   [[i.pop-a i.pop-b] ..$(a next.pop-a, b next.pop-b)]
+::
+++  random
+  |=  [from=@ to=@ eny=@]
+  ?>  (lte from to)
+  ^-  (iterator @)
+  =+  rng=~(. og eny)
+  =/  n=@  +((sub to from))
+  |.
+  =^  r  rng  (rads:rng n)
+  [(add from r) ..$]
+::
+++  need-eval
+  |*  it=(iterator)
+  ^-  [i=(iterator-type it) next=_it]
+  =+  eval=(it)
+  ~|  'empty-iterator'
+  ?>(?=(^ eval) eval)
 ::
 --
