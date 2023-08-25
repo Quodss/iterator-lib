@@ -8,7 +8,7 @@
 ::    %+  filter-true  |=(n=@ |(=(0 (mod n 3)) =(0 (mod n 5))))
 ::    (count from=1 step=1)
 ::
-::  How many times to roll a D20 to roll a 20?
+::  How many times to roll a D20 to get a 20?
 ::  =<
 ::    =;  it=(iterator [@ @])
 ::      ?:  (is-empty it)  1
