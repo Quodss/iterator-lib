@@ -8,10 +8,15 @@
 ::    %+  filter-true  |=(n=@ |(=(0 (mod n 3)) =(0 (mod n 5))))
 ::    (count from=1 step=1)
 ::
-::  Get 10.001th prime:
-::
-::  =<  (get-ind 10.000 primes)
-::
+::  How many times to roll a D20 to roll a 20?
+::  =<
+::    =;  it=(iterator [@ @])
+::      ?:  (is-empty it)  1
+::      -:(get-last it)
+::    %+  take-while  |=([p=@ q=@] (lth q 20))
+::    %+  zip
+::      (count 2 1)
+::    (random 1 20 eny)
 |%
 ++  iterator
   |$  [item]
@@ -104,7 +109,7 @@
   $(it next.pop-it, select next.pop-select)
 ::
 ++  drop-while
-  |*  [it=(iterator) f=$-(* ?)]
+  |*  [f=$-(* ?) it=(iterator)]
   ^+  it
   |.
   =+  (it)
@@ -156,7 +161,7 @@
   [(f i) ..$(it next)]
 ::
 ++  take-while
-  |*  [it=(iterator) f=$-(* ?)]
+  |*  [f=$-(* ?) it=(iterator)]
   ^+  it
   |.
   =+  (it)
