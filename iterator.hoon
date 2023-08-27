@@ -19,10 +19,9 @@
 ::    (random 1 20 eny)
 |%
 ++  iterator
-  |*  item=mold
-  =*  this-mold  $
+  |$  [item]
   $_  |?
-  ^-  $@(~ [i=item next=this-mold])
+  ^-  $@(~ [i=item next=(iterator item)])
   ~
 ::
 ++  list-to-iterator
