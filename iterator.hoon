@@ -19,9 +19,10 @@
 ::    (random 1 20 eny)
 |%
 ++  iterator
-  |$  [item]
-  $_  ^?  |.
-  ^-  $@(~ [i=item next=^$])
+  |*  item=mold
+  =*  this-mold  $
+  $_  |?
+  ^-  $@(~ [i=item next=this-mold])
   ~
 ::
 ++  list-to-iterator
@@ -223,7 +224,7 @@
   =^  r  rng  (rads:rng n)
   [(add from r) ..$]
 ::
-++  need-eval
+++  need-next
   |*  it=(iterator)
   ^-  [i=(iterator-type it) next=_it]
   =+  eval=(it)
