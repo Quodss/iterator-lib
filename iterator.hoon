@@ -43,16 +43,14 @@
   |-  ^+  out
   =+  (it)
   ?~  -  out
-  %=  $
-    out  [i out]
-    it  next
-  ==
+  $(out [i out], it next)
 ::
 ++  count
   |=  [start=@ step=@]
   ^-  (iterator @)
   |.
-  [start ..$(start (add start step))]
+  :-  start
+  ..$(start (add start step))
 ::  ++take first n
 ::
 ++  take
@@ -65,8 +63,7 @@
   ^+  a
   |.
   =+  (a)
-  ?~  -
-    (b)
+  ?~  -  (b)
   [i ..$(a next)]
 ::
 ++  cycle
@@ -78,8 +75,9 @@
     !!
   |.
   =+  (it)
-  ?^  -  [i ..$(it next)]
-  $(it it-init)
+  ?@  -
+    $(it it-init)
+  [i ..$(it next)]
 ::
 ++  repeat
   |*  a=*
@@ -100,13 +98,13 @@
   |*  [it=(iterator) select=(iterator ?)]
   ^+  it
   |.
-  =+  pop-select=(select)
-  ?~  pop-select  ~
-  =+  pop-it=(it)
-  ?~  pop-it  ~
-  ?:  i.pop-select
-    [i.pop-it ..$(it next.pop-it, select next.pop-select)]
-  $(it next.pop-it, select next.pop-select)
+  =+  [get-it get-select]=[(it) (select)]
+  ?.  &(?=(^ get-it) ?=(^ get-select))
+    ~
+  ?.  i.get-select
+    $(it next.get-it, select next.get-select)
+  :-  i.get-it
+  ..$(it next.get-it, select next.get-select)
 ::
 ++  drop-while
   |*  [f=$-(* ?) it=(iterator)]
@@ -139,7 +137,8 @@
   ?~  -  ~
   ?.  =(0 from)
     $(it next, from (dec from), counter +(counter))
-  [i ..$(it next, from (dec step), counter +(counter))]
+  :-  i
+  ..$(it next, from (dec step), counter +(counter))
 ::
 ++  pairwise
   |*  it=(iterator)
@@ -166,8 +165,7 @@
   |.
   =+  (it)
   ?~  -  ~
-  ?.  (f i)
-    ~
+  ?.  (f i)  ~
   [i ..$(it next)]
 ::
 ++  get-last  ::  unsafe: potential inf loop
