@@ -232,13 +232,13 @@
   =/  n=@  2
   ^-  (iterator @)
   |.
-  ~+
   ?:  =(n 2)
     [2 ..$(n 3)]
   =;  is-n-prime=?
     ?.  is-n-prime
       $(n (add 2 n))
     [n ..$(n (add 2 n))]
+  ~+
   %-  is-empty
   %+  filter  |=(i=@ =(0 (mod n i)))
   %+  take-while  |=(i=@ (lte (pow i 2) n))
